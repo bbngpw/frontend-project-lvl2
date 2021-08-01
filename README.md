@@ -4,7 +4,7 @@
 
 ### Linter and auto tests status:
 
-![Build workflow](https://github.com/bbngpw/frontend-project-lvl2/actions/workflows/nodejs.yml/badge.svg)
+[![Build workflow](https://github.com/bbngpw/frontend-project-lvl2/actions/workflows/nodejs.yml/badge.svg)](https://github.com/bbngpw/frontend-project-lvl2/actions/workflows/nodejs.yml)
 
 ### CodeClimate status:
 
