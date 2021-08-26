@@ -1,3 +1,12 @@
+## About:
+
+**Gendiff** will compare and find the difference between two files.
+
+Features:
+
+- File formats: _yaml_, _json_
+- Types of generated reports: _plain text_, _stylish_, _json_
+
 ### Hexlet tests and linter status:
 
 [![Actions Status](https://github.com/bbngpw/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/bbngpw/frontend-project-lvl2/actions)
