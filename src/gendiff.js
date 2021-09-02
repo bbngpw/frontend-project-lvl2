@@ -1,23 +1,10 @@
 import { readFileSync } from 'fs';
-import { extname } from 'path';
 import _ from 'lodash';
-import { load as loadYaml } from 'js-yaml';
+import parseFile from './parsers.js';
 
 const readFile = (filePath) => {
   const content = readFileSync(filePath);
   return { content, path: filePath };
-};
-
-const parseFile = (file) => {
-  let parsedContent = {};
-  const ext = extname(file.path);
-  if (ext.toLowerCase() === '.json') {
-    parsedContent = JSON.parse(file.content);
-  }
-  if (ext.toLowerCase() === '.yaml' || ext.toLowerCase() === '.yml') {
-    parsedContent = loadYaml(file.content);
-  }
-  return parsedContent;
 };
 
 const compareObjects = (obj1, obj2) => {
