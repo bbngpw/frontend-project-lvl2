@@ -1,14 +1,14 @@
 import { extname } from 'path';
 import { load as loadYaml } from 'js-yaml';
 
-const parseFile = (file) => {
-  const ext = extname(file.path).toLowerCase();
+const parseFile = (filecontent, filepath) => {
+  const ext = extname(filepath).toLowerCase();
   switch (ext) {
     case '.json':
-      return JSON.parse(file.content);
+      return JSON.parse(filecontent);
     case '.yml':
     case '.yaml':
-      return loadYaml(file.content);
+      return loadYaml(filecontent);
     default:
       return {};
   }

@@ -2,11 +2,6 @@ import { readFileSync } from 'fs';
 import _ from 'lodash';
 import parseFile from './parsers.js';
 
-const readFile = (filePath) => {
-  const content = readFileSync(filePath);
-  return { content, path: filePath };
-};
-
 const compareObjects = (obj1, obj2) => {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
@@ -29,11 +24,11 @@ const compareObjects = (obj1, obj2) => {
 };
 
 const genDiff = (filepath1, filepath2) => {
-  const file1 = readFile(filepath1);
-  const file2 = readFile(filepath2);
+  const content1 = readFileSync(filepath1);
+  const content2 = readFileSync(filepath2);
 
-  const object1 = parseFile(file1);
-  const object2 = parseFile(file2);
+  const object1 = parseFile(content1, filepath1);
+  const object2 = parseFile(content2, filepath2);
 
   return compareObjects(object1, object2);
 };
