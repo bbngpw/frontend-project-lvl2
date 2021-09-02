@@ -22,4 +22,4 @@ Features:
 
 ## Demo project:
 
-- https://asciinema.org/a/OTA7fDg44TBiP6nXNnUcwCM0d
+- https://asciinema.org/a/iaLI8S0PyMNuzhvZ76NPhUms1
