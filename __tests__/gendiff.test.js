@@ -7,11 +7,12 @@ const __dirname = dirname(__filename);
 
 const getFixturePath = (filename) => join(__dirname, '..', '__fixtures__', filename);
 
-test('genDiff with nested json files', () => {
+test('genDiff with nested json files and "stylish" format', () => {
   const path1 = getFixturePath('file1.json');
   const path2 = getFixturePath('file2.json');
+  const format = 'stylish';
 
-  expect(genDiff(path1, path2)).toBe(`{
+  expect(genDiff(path1, path2, format)).toBe(`{
     common: {
       + follow: false
         setting1: Value 1
@@ -56,7 +57,7 @@ test('genDiff with nested json files', () => {
     }
 }`);
 
-  expect(genDiff(path2, path1)).toBe(`{
+  expect(genDiff(path2, path1, format)).toBe(`{
     common: {
       - follow: false
         setting1: Value 1
@@ -101,7 +102,7 @@ test('genDiff with nested json files', () => {
     }
 }`);
 
-  expect(genDiff(path1, path1)).toBe(`{
+  expect(genDiff(path1, path1, format)).toBe(`{
     common: {
         setting1: Value 1
         setting2: 200
@@ -129,11 +130,12 @@ test('genDiff with nested json files', () => {
 }`);
 });
 
-test('genDiff with nested yaml files', () => {
+test('genDiff with nested yaml files and "stylish" format', () => {
   const path1 = getFixturePath('file1.yml');
   const path2 = getFixturePath('file2.yml');
+  const format = 'stylish';
 
-  expect(genDiff(path1, path2)).toBe(`{
+  expect(genDiff(path1, path2, format)).toBe(`{
     common: {
       + follow: false
         setting1: Value 1
@@ -178,7 +180,7 @@ test('genDiff with nested yaml files', () => {
     }
 }`);
 
-  expect(genDiff(path2, path1)).toBe(`{
+  expect(genDiff(path2, path1, format)).toBe(`{
     common: {
       - follow: false
         setting1: Value 1
@@ -223,7 +225,7 @@ test('genDiff with nested yaml files', () => {
     }
 }`);
 
-  expect(genDiff(path1, path1)).toBe(`{
+  expect(genDiff(path1, path1, format)).toBe(`{
     common: {
         setting1: Value 1
         setting2: 200
