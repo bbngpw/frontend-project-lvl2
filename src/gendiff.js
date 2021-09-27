@@ -36,7 +36,7 @@ const compareObjects = (obj1, obj2) => {
   return allKeys.flatMap(getKeyDiff);
 };
 
-const genDiff = (filepath1, filepath2) => {
+const genDiff = (filepath1, filepath2, format = 'stylish') => {
   const content1 = readFileSync(filepath1);
   const content2 = readFileSync(filepath2);
 
@@ -44,7 +44,7 @@ const genDiff = (filepath1, filepath2) => {
   const object2 = parseFile(content2, filepath2);
 
   const diff = compareObjects(object1, object2);
-  return formatDiff(diff);
+  return formatDiff(diff, format);
 };
 
 export default genDiff;
