@@ -2,21 +2,39 @@ import _ from 'lodash';
 
 const statusToSymbol = {
   added: '+',
-  deleted: '-',
+  removed: '-',
   unchanged: ' ',
   commonParent: ' ',
 };
 
-const formatKey = (key, value, depth, status) => {
+const keyToLine = (key, depth) => {
+  const status = statusToSymbol[key.status];
+  const indent = ' '.repeat(depth * 4);
+  const lineStart = `${indent}  ${status} ${key.name}: `;
+  return `${lineStart}${key.value}`;
+};
+
+const formatKey = (key, depth) => {
   const indent = ' '.repeat(depth * 4);
   const bracketIndent = ' '.repeat((depth + 1) * 4);
+  const { value } = key;
+  const status = statusToSymbol[key.status];
 
   if (!_.isObject(value)) {
-    return `${indent}    ${key}: ${value}`;
+    return keyToLine(key, depth);
   }
   const keys = Object.keys(value);
-  const subLines = keys.flatMap((subKey) => formatKey(subKey, value[subKey], depth + 1, ' '));
-  return [`${indent}  ${status} ${key}: {`, ...subLines, bracketIndent.concat('}')];
+  const subLines = keys.flatMap((subKey) =>
+    formatKey(
+      {
+        name: subKey,
+        value: value[subKey],
+        status: 'unchanged',
+      },
+      depth + 1
+    )
+  );
+  return [`${indent}  ${status} ${key.name}: {`, ...subLines, bracketIndent.concat('}')];
 };
 
 const formatStylish = (diff) => {
@@ -28,6 +46,11 @@ const formatStylish = (diff) => {
 
     const keys = nodes.flatMap((key) => {
       // console.log(key);
+      if (key.status === 'updated') {
+        const removedKey = { ...key, status: 'removed', value: key.oldValue };
+        const addedKey = { ...key, status: 'added', value: key.newValue };
+        return [formatKey(removedKey, depth), formatKey(addedKey, depth)].flat();
+      }
       const status = statusToSymbol[key.status];
       const lineStart = `${indent}  ${status} ${key.name}: `;
 
@@ -37,10 +60,10 @@ const formatStylish = (diff) => {
       }
 
       if (_.isObject(key.value)) {
-        return formatKey(key.name, key.value, depth, status);
+        return formatKey(key, depth);
       }
 
-      return `${lineStart}${key.value}`;
+      return keyToLine(key, depth);
     });
 
     return keys.map((key) => key.trimEnd());
