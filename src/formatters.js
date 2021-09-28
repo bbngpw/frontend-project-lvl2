@@ -4,72 +4,69 @@ const statusToSymbol = {
   added: '+',
   removed: '-',
   unchanged: ' ',
-  commonParent: ' ',
 };
 
-const keyToLine = (key, depth) => {
-  const status = statusToSymbol[key.status];
+const formatComplexValue = (key, value, depth) => {
   const indent = ' '.repeat(depth * 4);
-  const lineStart = `${indent}  ${status} ${key.name}: `;
-  return `${lineStart}${key.value}`;
-};
-
-const formatKey = (key, depth) => {
-  const indent = ' '.repeat(depth * 4);
-  const bracketIndent = ' '.repeat((depth + 1) * 4);
-  const { value } = key;
-  const status = statusToSymbol[key.status];
-
   if (!_.isObject(value)) {
-    return keyToLine(key, depth);
+    return `${indent}    ${key}: ${value}`;
   }
-  const keys = Object.keys(value);
-  const subLines = keys.flatMap((subKey) =>
-    formatKey(
-      {
-        name: subKey,
-        value: value[subKey],
-        status: 'unchanged',
-      },
-      depth + 1
-    )
-  );
-  return [`${indent}  ${status} ${key.name}: {`, ...subLines, bracketIndent.concat('}')];
+  const lines = Object.keys(value).flatMap((innerKey) => {
+    const innerValue = value[innerKey];
+    return formatComplexValue(innerKey, innerValue, depth + 1);
+  });
+  const bracketIndent = ' '.repeat((depth + 1) * 4);
+  return [`${indent}    ${key}: {`, ...lines, bracketIndent.concat('}')];
 };
 
-const formatStylish = (diff) => {
-  const formatIter = (nodes, depth = 0) => {
-    // console.log('nodes: ', JSON.stringify(nodes, null, 4));
-    const newDepth = depth + 1;
-    const indent = ' '.repeat(depth * 4);
-    const newIndent = ' '.repeat(newDepth * 4);
-
-    const keys = nodes.flatMap((key) => {
-      // console.log(key);
-      if (key.status === 'updated') {
-        const removedKey = { ...key, status: 'removed', value: key.oldValue };
-        const addedKey = { ...key, status: 'added', value: key.newValue };
-        return [formatKey(removedKey, depth), formatKey(addedKey, depth)].flat();
-      }
-      const status = statusToSymbol[key.status];
-      const lineStart = `${indent}  ${status} ${key.name}: `;
-
-      if (key.status === 'commonParent') {
-        const children = formatIter(key.children, newDepth);
-        return [lineStart.concat('{'), ...children, newIndent.concat('}')];
-      }
-
-      if (_.isObject(key.value)) {
-        return formatKey(key, depth);
-      }
-
-      return keyToLine(key, depth);
-    });
-
-    return keys.map((key) => key.trimEnd());
-  };
-  return ['{', ...formatIter(diff), '}'].join('\n');
+const formatPlainNode = (node, depth) => {
+  const status = statusToSymbol[node.status];
+  const indent = ' '.repeat(depth * 4);
+  const lineStart = `${indent}  ${status} ${node.name}: `;
+  return `${lineStart}${node.value}`;
 };
+
+const formatNode = (node, depth) => {
+  const indent = ' '.repeat(depth * 4);
+  const status = statusToSymbol[node.status];
+  if (!_.isObject(node.value)) {
+    return formatPlainNode(node, depth);
+  }
+  const complexValue = node.value;
+  const innerKeys = Object.keys(complexValue);
+  const lines = innerKeys.flatMap((innerKey) => {
+    const innerValue = complexValue[innerKey];
+    return formatComplexValue(innerKey, innerValue, depth + 1);
+  });
+  const bracketIndent = ' '.repeat((depth + 1) * 4);
+  return [`${indent}  ${status} ${node.name}: {`, ...lines, bracketIndent.concat('}')];
+};
+
+const formatIter = (nodes, depth = 0) => {
+  // console.log('nodes: ', JSON.stringify(nodes, null, 4));
+  const newDepth = depth + 1;
+  const indent = ' '.repeat(depth * 4);
+  const newIndent = ' '.repeat(newDepth * 4);
+
+  const lines = nodes.flatMap((node) => {
+    if (node.status === 'updated') {
+      const removedKey = { ...node, status: 'removed', value: node.oldValue };
+      const addedKey = { ...node, status: 'added', value: node.newValue };
+      return [formatNode(removedKey, depth), formatNode(addedKey, depth)].flat();
+    }
+    const status = statusToSymbol[node.status];
+    const lineStart = `${indent}  ${status} ${node.name}: `;
+
+    if (node.children) {
+      const children = formatIter(node.children, newDepth);
+      return [lineStart.concat('{'), ...children, newIndent.concat('}')];
+    }
+    return formatNode(node, depth);
+  });
+  return lines.map((line) => line.trimEnd());
+};
+
+const formatStylish = (diff) => ['{', ...formatIter(diff), '}'].join('\n');
 
 const formatDiff = (diff, format) => {
   switch (format) {

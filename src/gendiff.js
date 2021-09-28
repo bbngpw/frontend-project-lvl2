@@ -16,7 +16,7 @@ const compareObjects = (obj1, obj2) => {
     if (_.isObject(value1) && _.isObject(value2)) {
       return {
         name: key,
-        status: 'commonParent',
+        status: 'unchanged',
         children: compareObjects(value1, value2),
       };
     }
@@ -28,7 +28,12 @@ const compareObjects = (obj1, obj2) => {
         newValue: value2,
       };
     }
-    return { name: key, status: 'unchanged', value: value1 };
+    return {
+      name: key,
+      status: 'unchanged',
+      value: value1,
+      children: null,
+    };
   };
 
   const keys1 = Object.keys(obj1);
