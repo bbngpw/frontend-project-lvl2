@@ -25,7 +25,7 @@ test('genDiff with nested json files and "stylish" format', () => {
         }
         setting6: {
             doge: {
-              - wow:
+              - wow:${' '}
               + wow: so much
             }
             key: value
@@ -76,7 +76,7 @@ test('genDiff with nested yaml files and "stylish" format', () => {
         }
         setting6: {
             doge: {
-              - wow:
+              - wow:${' '}
               + wow: so much
             }
             key: value
