@@ -252,3 +252,39 @@ test('genDiff with nested yaml files and "stylish" format', () => {
     }
 }`);
 });
+
+test('genDiff with nested json files and "plain" format', () => {
+  const path1 = getFixturePath('file1.json');
+  const path2 = getFixturePath('file2.json');
+  const format = 'plain';
+
+  expect(genDiff(path1, path2, format)).toBe(`Property 'common.follow' was added with value: false
+Property 'common.setting2' was removed
+Property 'common.setting3' was updated. From true to null
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.doge.wow' was updated. From '' to 'so much'
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was updated. From 'bas' to 'bars'
+Property 'group1.nest' was updated. From [complex value] to 'str'
+Property 'group2' was removed
+Property 'group3' was added with value: [complex value]`);
+});
+
+test('genDiff with nested yaml files and "plain" format', () => {
+  const path1 = getFixturePath('file1.yml');
+  const path2 = getFixturePath('file2.yml');
+  const format = 'plain';
+
+  expect(genDiff(path1, path2, format)).toBe(`Property 'common.follow' was added with value: false
+Property 'common.setting2' was removed
+Property 'common.setting3' was updated. From true to null
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.doge.wow' was updated. From '' to 'so much'
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was updated. From 'bas' to 'bars'
+Property 'group1.nest' was updated. From [complex value] to 'str'
+Property 'group2' was removed
+Property 'group3' was added with value: [complex value]`);
+});
