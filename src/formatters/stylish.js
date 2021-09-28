@@ -63,7 +63,7 @@ const formatIter = (nodes, depth = 0) => {
     }
     return formatNode(node, depth);
   });
-  return lines.map((line) => line.trimEnd());
+  return lines.map((line) => line);
 };
 
 const formatStylish = (diff) => ['{', ...formatIter(diff), '}'].join('\n');
