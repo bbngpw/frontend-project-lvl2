@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import _ from 'lodash';
 import parseFile from './parsers.js';
-import formatDiff from './formatters.js';
+import formatDiff from './formatters/index.js';
 
 const compareObjects = (obj1, obj2) => {
   const getKeyDiff = (key) => {
