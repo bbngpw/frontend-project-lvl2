@@ -288,3 +288,25 @@ Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]`);
 });
+
+test('genDiff with nested json files and "json" format', () => {
+  const path1 = getFixturePath('file1.json');
+  const path2 = getFixturePath('file2.json');
+  const format = 'json';
+
+  expect(genDiff(path1, path2, format)).toBe(
+    // eslint-disable-next-line comma-dangle
+    '[{"name":"common","status":"unchanged","children":[{"name":"follow","status":"added","value":false},{"name":"setting1","status":"unchanged","value":"Value 1","children":null},{"name":"setting2","status":"removed","value":200},{"name":"setting3","status":"updated","oldValue":true,"newValue":null},{"name":"setting4","status":"added","value":"blah blah"},{"name":"setting5","status":"added","value":{"key5":"value5"}},{"name":"setting6","status":"unchanged","children":[{"name":"doge","status":"unchanged","children":[{"name":"wow","status":"updated","oldValue":"","newValue":"so much"}]},{"name":"key","status":"unchanged","value":"value","children":null},{"name":"ops","status":"added","value":"vops"}]}]},{"name":"group1","status":"unchanged","children":[{"name":"baz","status":"updated","oldValue":"bas","newValue":"bars"},{"name":"foo","status":"unchanged","value":"bar","children":null},{"name":"nest","status":"updated","oldValue":{"key":"value"},"newValue":"str"}]},{"name":"group2","status":"removed","value":{"abc":12345,"deep":{"id":45}}},{"name":"group3","status":"added","value":{"deep":{"id":{"number":45}},"fee":100500}}]'
+  );
+});
+
+test('genDiff with nested yaml files and "json" format', () => {
+  const path1 = getFixturePath('file1.yml');
+  const path2 = getFixturePath('file2.yml');
+  const format = 'json';
+
+  expect(genDiff(path1, path2, format)).toBe(
+    // eslint-disable-next-line comma-dangle
+    '[{"name":"common","status":"unchanged","children":[{"name":"follow","status":"added","value":false},{"name":"setting1","status":"unchanged","value":"Value 1","children":null},{"name":"setting2","status":"removed","value":200},{"name":"setting3","status":"updated","oldValue":true,"newValue":null},{"name":"setting4","status":"added","value":"blah blah"},{"name":"setting5","status":"added","value":{"key5":"value5"}},{"name":"setting6","status":"unchanged","children":[{"name":"doge","status":"unchanged","children":[{"name":"wow","status":"updated","oldValue":"","newValue":"so much"}]},{"name":"key","status":"unchanged","value":"value","children":null},{"name":"ops","status":"added","value":"vops"}]}]},{"name":"group1","status":"unchanged","children":[{"name":"baz","status":"updated","oldValue":"bas","newValue":"bars"},{"name":"foo","status":"unchanged","value":"bar","children":null},{"name":"nest","status":"updated","oldValue":{"key":"value"},"newValue":"str"}]},{"name":"group2","status":"removed","value":{"abc":12345,"deep":{"id":45}}},{"name":"group3","status":"added","value":{"deep":{"id":{"number":45}},"fee":100500}}]'
+  );
+});
